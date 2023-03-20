@@ -20,6 +20,10 @@ class MyApp extends StatelessWidget {
       ),
       home: const SplashScreen(),
       debugShowCheckedModeBanner: false,
+      routes: <String, WidgetBuilder>{
+        '/wordle': (BuildContext context) =>
+            const GameScreen(),
+      }
     );
   }
 }

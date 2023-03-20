@@ -25,7 +25,7 @@ class GameBoardState extends State<GameBoard> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8.0),
               color: e.code == 0 
-                ? Colors.grey
+                ? Colors.grey.shade400
                 : e.code == 1 
                   ?Colors.green 
                   : Colors.amber,

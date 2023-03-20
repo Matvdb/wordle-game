@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:wordle/ecrans/game.dart';
+import 'package:wordle/outils/strings.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -11,30 +13,131 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool estClique = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade800,
+      backgroundColor: Colors.green.shade900,
       body: Center(
-        child: Column(
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text("Bienvenue sur le jeu du", 
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.3,
+              child: const Image(image: AssetImage("assets/wordle.png")),
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.1,
+            ),
+            const Text("Bienvenue sur le jeu du", 
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 20.0,
+                fontSize: 30.0,
                 color: Colors.white,
               ),
             ),
             TextButton(
               onPressed: (){
-                
+                setState(() {
+                  estClique = true;
+                });
               }, 
-              child: Text("Wordle"))
+              child: Text("Wordle", 
+                style: TextStyle(
+                  fontSize: 35.00,
+                  fontWeight: FontWeight.bold,
+                  color: estClique == false 
+                  ? Colors.white
+                  : estClique == true
+                    ?Colors.red:Colors.green,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.1,
+            ),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white38,
+              ),
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: const [
+                  Padding(padding: EdgeInsets.all(10)),
+                  Text("À lire avant de jouer",
+                    style: TextStyle(
+                      fontSize: 20.0,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.all(5)),
+                  Text(Strings.titreHPRegle, 
+                    style: TextStyle(
+                      fontSize: 25.0,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.all(15)),
+                  Text(Strings.regleGame,
+                    style: TextStyle(
+                      fontSize: 15,
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.all(8)),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Text(Strings.provoc,
+                      style: TextStyle(
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.all(40)),
+                  Text(Strings.titreHPWordle, 
+                    style: TextStyle(
+                      fontSize: 25.0,
+                      fontWeight: FontWeight.bold,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.all(15)),
+                  Text(Strings.wordleDesc,
+                    style: TextStyle(
+                      fontSize: 15,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
+        ),
       ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => GameScreen(),
+            ));
+        },
+        label: const Text("Lancez votre première partie"),
+        icon: const Icon(Icons.play_arrow),
+        hoverColor: Colors.orange,
+        splashColor: Colors.white,
+        
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
     );
   }
 }

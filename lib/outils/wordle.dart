@@ -12,7 +12,7 @@ class WordleGame{
     "TESTE",
     "AIMER",
     "FEURE",
-    "FLEURE",
+    "MANGE",
     "ZEUBI",
     "IDEES",
   ];

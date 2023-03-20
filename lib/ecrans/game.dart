@@ -22,7 +22,7 @@ class _GameScreenState extends State<GameScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black26,
+      backgroundColor: Colors.green.shade700,
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(

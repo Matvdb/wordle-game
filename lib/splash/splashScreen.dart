@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:wordle/ecrans/game.dart';
 import 'package:wordle/ecrans/myhomepage.dart';
 
@@ -50,6 +51,13 @@ class _SplashScreenState extends State<SplashScreen> {
               image: AssetImage("assets/wordle.png"),
             ),
           ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.02,
+          ),
+          SpinKitWave(
+            color: Colors.white,
+            size: 30.0,
+          )
         ],
       ),
     );
