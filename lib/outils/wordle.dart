@@ -7,8 +7,8 @@ class WordleGame{
   int letterId = 0;
 
   static String msgGame = "";
-  static String game_guess = "";
-  static List<String> list_mot = [
+  static String gameguess = "";
+  static List<String> listmot = [
     "TESTE",
     "AIMER",
     "FEURE",
@@ -25,8 +25,8 @@ class WordleGame{
 
   static void initGame(){
     final random = new Random();
-    int index = random.nextInt(list_mot.length);
-    game_guess = list_mot[index];
+    int index = random.nextInt(listmot.length);
+    gameguess = listmot[index];
   }
 
   void insertWord(index, word){
@@ -34,7 +34,7 @@ class WordleGame{
   }
 
   bool checkWordExist(String word){
-    return list_mot.contains(word);
+    return listmot.contains(word);
   }
 }
 

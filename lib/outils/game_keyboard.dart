@@ -19,71 +19,77 @@ class _GameKeyboardState extends State<GameKeyboard> {
   List row3 = ["SUP", "W", "X", "C", "V", "B", "N", "ENTRÉE"];
 
   Future<void> _win() async {
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: false, // user must tap button!
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Féliciations 🎉', style: TextStyle(fontSize: 30.0),),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: const <Widget>[
-              Text('Gagnée 🎊',style: TextStyle(fontSize: 25.0),),
-              Text('Vous venez de trouvez le mot !'),
-            ],
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Félicitations 🎉', style: TextStyle(fontSize: 30.0),),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('Gagnée 🎊',style: TextStyle(fontSize: 25.0),),
+                Text('Vous venez de trouvez le mot !'),
+              ],
+            ),
           ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Continuer'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    }
-  );
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Continuer'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      }
+    );
   }
 
   Future<void> _loose() async {
-  return showDialog<void>(
-    context: context,
-    barrierDismissible: false, // user must tap button!
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Dommage... 😫', style: TextStyle(fontSize: 28.0),),
-        content: SingleChildScrollView(
-          child: ListBody(
-            children: const <Widget>[
-              Text('Défaite 🥴',style: TextStyle(fontSize: 25.0),),
-              Text("Vous n'avez pas réussi à trouver le mot, réessayer !"),
-            ],
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Dommage... 😫', style: TextStyle(fontSize: 28.0),),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('Défaite 🥴',style: TextStyle(fontSize: 25.0),),
+                Text("Vous n'avez pas réussi à trouver le mot, réessayer !"),
+              ],
+            ),
           ),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Continuer'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    }
-  );
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Continuer'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      }
+    );
   }
   
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(WordleGame.msgGame, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20.0),),
-        SizedBox(
+        Text(WordleGame.msgGame, 
+          style: const TextStyle(
+            color: Colors.white, 
+            fontWeight: FontWeight.bold, 
+            fontSize: 20.0,
+          ),
+        ),
+        const SizedBox(
           height: 20.0,
         ),
         GameBoard(widget.game),
-        SizedBox(
+        const SizedBox(
           height: 40.0,
         ),
         Row(
@@ -100,7 +106,7 @@ class _GameKeyboardState extends State<GameKeyboard> {
                 }
               },
               child: Container(
-              padding: EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(10.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
                 color: Colors.white,
@@ -109,7 +115,7 @@ class _GameKeyboardState extends State<GameKeyboard> {
             ));
           }).toList(),
         ),
-        SizedBox(
+        const SizedBox(
           height: 10.0,
         ),
         Row(
@@ -127,7 +133,7 @@ class _GameKeyboardState extends State<GameKeyboard> {
                 }
               },
               child: Container(
-              padding: EdgeInsets.all(10.0),
+              padding: const EdgeInsets.all(10.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
                 color: Colors.white,
@@ -136,7 +142,7 @@ class _GameKeyboardState extends State<GameKeyboard> {
             ));
           }).toList(),
         ),
-        SizedBox(
+        const SizedBox(
           height: 10.0,
         ),
         Row(
@@ -156,7 +162,7 @@ class _GameKeyboardState extends State<GameKeyboard> {
                   if(widget.game.letterId == 5){
                     String guess = widget.game.wordleBoard[widget.game.rowId].map((e) => e.letter).join();
                     if(widget.game.checkWordExist(guess)){
-                      if(guess == WordleGame.game_guess){
+                      if(guess == WordleGame.gameguess){
                         setState(() {
                           _win();
                           widget.game.wordleBoard[widget.game.rowId].forEach((element) {element.code = 1;});
@@ -165,8 +171,8 @@ class _GameKeyboardState extends State<GameKeyboard> {
                         int listLength = guess.length;
                         for (int i = 0; i < listLength; i++){
                           String char = guess[i];
-                          if(WordleGame.game_guess.contains(char)){
-                            if(WordleGame.game_guess[i] == char){
+                          if(WordleGame.gameguess.contains(char)){
+                            if(WordleGame.gameguess[i] == char){
                               setState(() {
                                 widget.game.wordleBoard[widget.game.rowId][i].code = 1;
                               });
@@ -190,11 +196,11 @@ class _GameKeyboardState extends State<GameKeyboard> {
                   }
                 } else{
                   if(widget.game.letterId < 5){
-                  setState(() {
-                    widget.game.insertWord(widget.game.letterId, Letter(e, 0));
-                    widget.game.letterId++;
-                  });
-                }
+                    setState(() {
+                      widget.game.insertWord(widget.game.letterId, Letter(e, 0));
+                      widget.game.letterId++;
+                    });
+                  }
                 }
               },
               child: Container(
