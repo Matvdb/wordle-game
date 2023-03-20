@@ -1,4 +1,4 @@
-<picture>
+<picture text-center>
   <img src="assets/wordle.png">
 </picture>  
 
