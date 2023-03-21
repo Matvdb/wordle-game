@@ -17,8 +17,57 @@ class _GameKeyboardState extends State<GameKeyboard> {
   List row1 = "AZERTYUIOP".split("");
   List row2 = "QSDFGHJKLM".split("");
   List row3 = ["SUP", "W", "X", "C", "V", "B", "N", "ENTRÉE"];
+  int point = 0;
 
-  Future<void> _win() async {
+  void score(){ // Fonction ajoutant 1 de score à chaque fois que le Joueur gagne la partie
+    if(widget.game.letterId == 5){
+      String guess = widget.game.wordleBoard[widget.game.rowId].map((e) => e.letter).join();
+      if(widget.game.checkWordExist(guess)){
+        if(guess == WordleGame.gameguess){
+          point++;
+        }
+      }
+    }
+  }
+
+  Future<void> _restartGame(){
+    return showDialog(
+      context: context, 
+      builder: (BuildContext context){
+        return Column(
+          children: widget.game.wordleBoard
+          .map((e) => Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround, 
+              children: e.map((e) => Container(
+                padding: const EdgeInsets.all(16.0),
+                width: MediaQuery.of(context).size.width * 0.15,
+                height: MediaQuery.of(context).size.height * 0.09,
+                margin: const EdgeInsets.symmetric(vertical: 10.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8.0),
+                  color: e.code == 0 
+                    ? Colors.grey.shade400
+                    : e.code == 1 
+                      ?Colors.green 
+                      : Colors.amber,
+                ),
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Text("${e.letter}", style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.0,
+                ),),
+                ) 
+              )).toList(),
+            ),
+          ).toList(),
+        );
+      }
+    );
+  }
+
+
+  Future<void> _win() async { // Widget affichant un pop-up lorsque le Joueur a gagné
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -46,7 +95,7 @@ class _GameKeyboardState extends State<GameKeyboard> {
     );
   }
 
-  Future<void> _loose() async {
+  Future<void> _loose() async { // Widget affichant un pop-up lorsque le Joueur a perdu
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -66,6 +115,7 @@ class _GameKeyboardState extends State<GameKeyboard> {
               child: const Text('Continuer'),
               onPressed: () {
                 Navigator.of(context).pop();
+                _restartGame();
               },
             ),
           ],
@@ -78,7 +128,7 @@ class _GameKeyboardState extends State<GameKeyboard> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(WordleGame.msgGame, 
+        Text("$point", 
           style: const TextStyle(
             color: Colors.white, 
             fontWeight: FontWeight.bold, 
@@ -106,13 +156,14 @@ class _GameKeyboardState extends State<GameKeyboard> {
                 }
               },
               child: Container(
-              padding: const EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10.0),
-                color: Colors.white,
+                padding: const EdgeInsets.all(10.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: Colors.white,
+                ),
+                child: Text("${e}"),
               ),
-              child: Text("${e}"),
-            ));
+            );
           }).toList(),
         ),
         const SizedBox(
@@ -164,6 +215,7 @@ class _GameKeyboardState extends State<GameKeyboard> {
                     if(widget.game.checkWordExist(guess)){
                       if(guess == WordleGame.gameguess){
                         setState(() {
+                          score();
                           _win();
                           widget.game.wordleBoard[widget.game.rowId].forEach((element) {element.code = 1;});
                         });

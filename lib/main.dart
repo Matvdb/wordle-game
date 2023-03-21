@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:wordle/ecrans/connexion.dart';
 import 'package:wordle/ecrans/game.dart';
+import 'package:wordle/ecrans/inscription.dart';
 import 'package:wordle/ecrans/myhomepage.dart';
 import 'package:wordle/splash/splashScreen.dart';
 
@@ -21,8 +23,9 @@ class MyApp extends StatelessWidget {
       home: const SplashScreen(),
       debugShowCheckedModeBanner: false,
       routes: <String, WidgetBuilder>{
-        '/wordle': (BuildContext context) =>
-            const GameScreen(),
+        '/wordle': (BuildContext context) => const GameScreen(),
+        '/inscription': (BuildContext context) => const Inscription(),
+        '/connexion': (BuildContext context) => const Connexion(),
       }
     );
   }

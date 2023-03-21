@@ -15,6 +15,45 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool estClique = false;
 
+  Future<void> _popUpConnexion() async { // Widget affichant un pop-up de connexion
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Vérification rapide', style: TextStyle(fontSize: 20.0),),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('Avez-vous un compte ?',style: TextStyle(fontSize: 15.0),),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Fermer'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Non'),
+              onPressed: () {
+                Navigator.pushNamed(context, "/inscription");
+              },
+            ),
+            TextButton(
+              child: const Text('Oui'),
+              onPressed: () {
+                Navigator.pushNamed(context, "/connexion");
+              },
+            ),
+          ],
+        );
+      }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,6 +94,17 @@ class _MyHomePageState extends State<MyHomePage> {
                     ?Colors.red:Colors.green,
                 ),
               ),
+            ),
+            Padding(padding: EdgeInsets.all(8)),
+            IconButton(
+              onPressed: () {
+                setState(() {
+                  _popUpConnexion();
+                });
+              }, 
+              icon: Icon(Icons.person_rounded),
+              color: Colors.white,
+              tooltip: "Inscription",
             ),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.1,

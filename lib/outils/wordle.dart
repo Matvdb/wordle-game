@@ -36,6 +36,7 @@ class WordleGame{
   bool checkWordExist(String word){
     return listmot.contains(word);
   }
+
 }
 
 class Letter{

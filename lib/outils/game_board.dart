@@ -38,7 +38,7 @@ class GameBoardState extends State<GameBoard> {
             ),),
             ) 
           )).toList(),
-        )
+        ),
       ).toList(),
     );
   }
