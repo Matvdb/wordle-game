@@ -1,9 +1,8 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:wordle/ecrans/game.dart';
+import 'package:wordle/ecrans/connexion.dart';
 import 'package:wordle/ecrans/myhomepage.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -13,20 +12,37 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
+
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(seconds: 3),
+    vsync: this,
+  )..repeat(reverse: true);
+  late final Animation<double> _animation = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.fastOutSlowIn,
+  );
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   void initState(){
     super.initState();
     Timer(
-      const Duration(seconds: 2), 
-    ()=> Navigator.pushReplacement(
-      context, MaterialPageRoute(
-        builder: (context) => const MyHomePage(title: "Wordle",),
+      const Duration(seconds: 3), 
+      ()=> Navigator.pushReplacement(
+        context, MaterialPageRoute(
+          builder: (context) => const Connexion(),
+        )
       )
-    )
-  );
+    );
   }
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -45,16 +61,19 @@ class _SplashScreenState extends State<SplashScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.2,
-            child: const Image(
-              image: AssetImage("assets/wordle.png"),
+          ScaleTransition(
+            scale: _animation,
+            child: const Padding(
+              padding: EdgeInsets.all(8.0),
+                child: Image(
+                image: AssetImage("assets/wordle.png"),
+              ),
             ),
           ),
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.02,
           ),
-          SpinKitWave(
+          const SpinKitWave(
             color: Colors.white,
             size: 30.0,
           )

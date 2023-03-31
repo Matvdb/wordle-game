@@ -1,9 +1,14 @@
+
+
 import 'dart:developer';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wordle/outils/game_board.dart';
 import 'package:wordle/outils/wordle.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
 
 class GameKeyboard extends StatefulWidget {
   GameKeyboard(this.game, {Key? key}) : super(key: key);
@@ -18,6 +23,11 @@ class _GameKeyboardState extends State<GameKeyboard> {
   List row2 = "QSDFGHJKLM".split("");
   List row3 = ["SUP", "W", "X", "C", "V", "B", "N", "ENTRÉE"];
   int point = 0;
+  bool _aGagner = false;
+  bool _recupDataBool = false;
+  int _status_code = -1;
+  Map<String, dynamic> _mots = new Map();
+
 
   void score(){ // Fonction ajoutant 1 de score à chaque fois que le Joueur gagne la partie
     if(widget.game.letterId == 5){
@@ -30,40 +40,19 @@ class _GameKeyboardState extends State<GameKeyboard> {
     }
   }
 
-  Future<void> _restartGame(){
-    return showDialog(
-      context: context, 
-      builder: (BuildContext context){
-        return Column(
-          children: widget.game.wordleBoard
-          .map((e) => Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround, 
-              children: e.map((e) => Container(
-                padding: const EdgeInsets.all(16.0),
-                width: MediaQuery.of(context).size.width * 0.15,
-                height: MediaQuery.of(context).size.height * 0.09,
-                margin: const EdgeInsets.symmetric(vertical: 10.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.0),
-                  color: e.code == 0 
-                    ? Colors.grey.shade400
-                    : e.code == 1 
-                      ?Colors.green 
-                      : Colors.amber,
-                ),
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text("${e.letter}", style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18.0,
-                ),),
-                ) 
-              )).toList(),
-            ),
-          ).toList(),
-        );
-      }
-    );
+  Future<String> recupMot() async { // Fonction qui récupère la liste de mots de l'API
+    String url =
+        "https://s3-4427.nuage-peda.fr/apiWordle/public/api/mots";
+    var reponse = await http.get(Uri.parse(url));
+    String result = 'pas de result';
+    _status_code = reponse.statusCode;
+    if (reponse.statusCode == 200) {
+      _mots = convert.jsonDecode(reponse.body);
+      _recupDataBool = true;
+      result = 'result';
+    }
+    await Future.delayed(const Duration(seconds: 1));
+    return result;
   }
 
 
@@ -73,16 +62,22 @@ class _GameKeyboardState extends State<GameKeyboard> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Félicitations 🎉', style: TextStyle(fontSize: 30.0),),
+          title: const Text('Félicitations 🎉', style: TextStyle(fontSize: 28.0),),
           content: SingleChildScrollView(
             child: ListBody(
               children: const <Widget>[
-                Text('Gagnée 🎊',style: TextStyle(fontSize: 25.0),),
+                Text('Gagnée !',style: TextStyle(fontSize: 25.0), textAlign: TextAlign.center,),
                 Text('Vous venez de trouvez le mot !'),
               ],
             ),
           ),
           actions: <Widget>[
+            TextButton(
+              child: const Text('Quitter'),
+              onPressed: () {
+                Navigator.pushNamed(context, "/home");
+              },
+            ),
             TextButton(
               child: const Text('Continuer'),
               onPressed: () {
@@ -115,7 +110,6 @@ class _GameKeyboardState extends State<GameKeyboard> {
               child: const Text('Continuer'),
               onPressed: () {
                 Navigator.of(context).pop();
-                _restartGame();
               },
             ),
           ],
@@ -140,7 +134,16 @@ class _GameKeyboardState extends State<GameKeyboard> {
         ),
         GameBoard(widget.game),
         const SizedBox(
-          height: 40.0,
+          height: 10.0,
+        ),
+        ElevatedButton(
+          onPressed: (){
+            WordleGame.initGame();
+          }, 
+          child: const Text("Recommencer"),
+        ),
+        const SizedBox(
+          height: 10.0,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -175,7 +178,7 @@ class _GameKeyboardState extends State<GameKeyboard> {
             return InkWell(
               onTap: (){
                 print(e);
-                // logic
+                // logique
                 if(widget.game.letterId < 5){
                   setState(() {
                     widget.game.insertWord(widget.game.letterId, Letter(e, 0));
@@ -215,6 +218,8 @@ class _GameKeyboardState extends State<GameKeyboard> {
                     if(widget.game.checkWordExist(guess)){
                       if(guess == WordleGame.gameguess){
                         setState(() {
+                          _aGagner = true;
+                          WordleGame.msgGame == "GG";
                           score();
                           _win();
                           widget.game.wordleBoard[widget.game.rowId].forEach((element) {element.code = 1;});
@@ -231,7 +236,6 @@ class _GameKeyboardState extends State<GameKeyboard> {
                             } else {
                               setState(() {
                                 widget.game.wordleBoard[widget.game.rowId][i].code = 2;
-                                log("widget = 2");
                               });
                             }
                           }
@@ -242,9 +246,9 @@ class _GameKeyboardState extends State<GameKeyboard> {
                     }
                   } else {
                     setState(() {
+                      _aGagner = false;
                       _loose();
                     });
-                    WordleGame.msgGame = "Ce mot n'existe pas, réessayer";
                   }
                 } else{
                   if(widget.game.letterId < 5){

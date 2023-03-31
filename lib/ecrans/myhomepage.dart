@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wordle/ecrans/game.dart';
+import 'package:wordle/outils/api.dart';
 import 'package:wordle/outils/strings.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -13,10 +16,45 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String _nom = '';
+  String _prenom = '';
+  String _login = '';
+  String _err = '';
+  Api api = Api();
+  var user;
+  bool recupDataBool = false;
   bool estClique = false;
 
+  void redirectionConnect(){
+    if(recupDataBool){
+      log("ratio");
+      Navigator.pushNamed(context, "/profil");
+    } else if(!recupDataBool) {
+      log("connecte toi");
+      Navigator.pushNamed(context, "/connexion");
+    }
+  }
+
+  void recupProfil() async {
+    user = await api.getUser();
+    if(user == null || user.isEmpty){
+      _err = "Champs vide";
+    } else if (user != null || !user.isEmpty) {
+      setState(() {
+        _nom = user['nom'].toString();
+        _prenom = user['prenom'].toString();
+        _login = user['username'].toString();
+
+        recupDataBool = true;
+        _err = '';
+      });
+    } else {
+      _err = 'Erreur lors de la récupération des données';
+    }
+  }
+
   Future<void> _popUpConnexion() async { // Widget affichant un pop-up de connexion
-    return showDialog<void>(
+     showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
@@ -53,7 +91,6 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     );
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,17 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ),
-            Padding(padding: EdgeInsets.all(8)),
-            IconButton(
-              onPressed: () {
-                setState(() {
-                  _popUpConnexion();
-                });
-              }, 
-              icon: Icon(Icons.person_rounded),
-              color: Colors.white,
-              tooltip: "Inscription",
-            ),
+            const Padding(padding: EdgeInsets.all(8)),
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.1,
             ),
@@ -172,12 +199,37 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         ),
       ),
+      bottomNavigationBar: BottomAppBar(
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.menu), 
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(Icons.info), 
+            tooltip: recupDataBool == true ? "Profil" : "Connexion",
+            onPressed: () {
+              setState(() {
+                redirectionConnect();
+              });
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.search), 
+            onPressed: () {},
+          ),
+        ],
+      ),
+    ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => GameScreen(),
+              builder: (context) => const GameScreen(),
             ));
         },
         label: const Text("Lancez votre première partie"),

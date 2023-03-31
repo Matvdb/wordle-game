@@ -15,6 +15,12 @@ class WordleGame{
     "MANGE",
     "ZEUBI",
     "IDEES",
+    "SUCRE",
+    "BOIRE",
+    "DORMI",
+    "INFOS",
+    "TABLE",
+    "CABLE",
   ];
 
   static bool gameOver = false;
